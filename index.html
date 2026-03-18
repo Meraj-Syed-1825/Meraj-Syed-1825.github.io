@@ -493,14 +493,14 @@
     }
 
     .reveal {
-      opacity: 0;
-      transform: translateY(24px);
+      opacity: 1;
+      transform: none;
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
+    .reveal.hidden {
+      opacity: 0;
+      transform: translateY(24px);
     }
 
     /* ── RESPONSIVE ── */
@@ -699,11 +699,11 @@
           <p class="project-num">02 — PyRolL · Python · Rolling Simulation</p>
           <h3>Elastic Roll Gap Simulation — PyRolL Plugin</h3>
           <p>
-            Custom PyRolL plugin implementing Hitchcock elastic roll deflection model and 
-            slab analysis using disk elements. Covers full thermomechanical analysis of 
-            an IMF finishing sequence (F1–F4) for C45 steel, including force, strain, and 
-            temperature prediction. Rigid vs elastic gap comparison with Newton-Raphson 
-            neutral point solver. Validated against Le & Sutcliffe (2001) experimental data.
+            Self-study project building custom PyRolL plugins for elastic roll deflection 
+            using the Hitchcock model and slab analysis with disk elements. Covers full 
+            thermomechanical analysis of an IMF finishing sequence (F1–F4) for C45 steel, 
+            including force, strain, and temperature prediction. Rigid vs elastic gap 
+            comparison with Newton-Raphson neutral point solver.
           </p>
           <div class="tags">
             <span class="tag">PyRolL</span>
@@ -711,8 +711,8 @@
             <span class="tag">Hitchcock Model</span>
             <span class="tag">Slab Analysis</span>
             <span class="tag">Thermomechanical</span>
-            <span class="tag gray">Master Thesis</span>
-            <span class="tag gray">TU Freiberg IMF</span>
+            <span class="tag gray">Self-Learning</span>
+            <span class="tag gray">TU Freiberg</span>
           </div>
         </div>
         <div class="project-arrow">→</div>
@@ -783,10 +783,19 @@
     <p>Built with HTML · Hosted on GitHub Pages</p>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Scroll reveal
+  <script>
+    // Scroll reveal — sections visible by default, animate in on scroll
     const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach(el => el.classList.add('hidden'));
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classLis
+          setTimeout(() => entry.target.classList.remove('hidden'), i * 80);
+        }
+      });
+    }, { threshold: 0.05 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
