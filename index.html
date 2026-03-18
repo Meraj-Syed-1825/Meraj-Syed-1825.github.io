@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meraj Syed — Engineer & ML Practitioner</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: rgba(255,255,255,0.08);
+      --accent: #c8f04a;
+      --accent2: #4af0c8;
+      --text: #f0ede6;
+      --muted: #888880;
+      --tag-bg: rgba(200,240,74,0.08);
+      --tag-border: rgba(200,240,74,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 4rem;
+      background: rgba(14,14,14,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 4rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 52ch;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 2px;
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0e0e0e;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: #d8ff5a;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,0.25);
+      background: var(--surface);
+    }
+
+    /* ── GRID BACKGROUND DECORATION ── */
+    .hero-grid {
+      position: absolute;
+      right: -2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 420px;
+      height: 420px;
+      opacity: 0.06;
+      background-image:
+        linear-gradient(var(--accent) 1px, transparent 1px),
+        linear-gradient(90deg, var(--accent) 1px, transparent 1px);
+      background-size: 40px 40px;
+      border-radius: 4px;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 6rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.3;
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      border-top: 1px solid var(--border);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .stat-card {
+      background: var(--surface);
+      padding: 1.75rem;
+    }
+
+    .stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.8rem;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── SKILLS ── */
+    #skills {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .skill-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      border-radius: 2px;
+      transition: border-color 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: rgba(200,240,74,0.3);
+    }
+
+    .skill-card-icon {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .skill-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 0.25rem 0.6rem;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      color: var(--accent);
+      border-radius: 2px;
+      letter-spacing: 0.03em;
+    }
+
+    .tag.gray {
+      background: rgba(255,255,255,0.04);
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
+    /* ── PROJECTS ── */
+    #projects {
+      border-top: 1px solid var(--border);
+    }
+
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .project-card {
+      background: var(--surface);
+      padding: 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .project-card:hover {
+      background: var(--surface2);
+    }
+
+    .project-card:hover .project-arrow {
+      transform: translateX(4px);
+      color: var(--accent);
+    }
+
+    .project-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      opacity: 0.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-card p {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 60ch;
+      margin-bottom: 1rem;
+    }
+
+    .project-arrow {
+      font-size: 1.4rem;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    /* ── EXPERIENCE ── */
+    #experience {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-left: 1px solid var(--border);
+      padding-left: 2.5rem;
+      margin-left: 1rem;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.65rem;
+      top: 0.4rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .timeline-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .timeline-item h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .timeline-company {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .timeline-item p {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    #contact h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      margin-bottom: 1rem;
+    }
+
+    #contact p {
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      font-size: 0.95rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.25rem 2rem; }
+      .hero { padding: 7rem 2rem 4rem; }
+      section { padding: 4rem 2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .hero-grid { display: none; }
+      footer { padding: 2rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+
+    @media (max-width: 600px) {
+      .skills-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">MS // portfolio</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <p class="hero-tag">Mechanical Engineer · ML Practitioner · Materials Scientist</p>
+    <h1>Meraj<br/><em>Syed</em></h1>
+    <p class="hero-sub">
+      Flight hardware designer turned ML practitioner. I apply machine learning to 
+      engineering problems — predicting material behavior, optimizing forming processes, 
+      and bridging the gap between simulation and data.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects →</a>
+      <a href="https://github.com/Meraj-Syed-1825" target="_blank" class="btn btn-secondary">GitHub ↗</a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <p class="section-label reveal">About</p>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <h2>Engineer who speaks both FEM and Python.</h2>
+        <p>
+          I'm an M.Sc. student in Metallic Materials Technology at TU Bergakademie Freiberg, 
+          specializing in metal forming. My engineering foundation — flight hardware at 
+          Rocket Factory Augsburg, rolling simulation, FEM — gives me a domain edge 
+          that pure data scientists don't have.
+        </p>
+        <p>
+          I'm now systematically building ML skills, applying them directly to 
+          materials and manufacturing problems: predicting yield strength, 
+          clustering steel compositions, optimizing process parameters.
+        </p>
+        <p>
+          My goal is to work at the intersection of simulation, materials data, 
+          and machine learning — where engineering judgment and algorithms reinforce each other.
+        </p>
+      </div>
+      <div class="stats-grid reveal">
+        <div class="stat-card">
+          <div class="stat-number">12+</div>
+          <div class="stat-label">ML projects completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">M.Sc.</div>
+          <div class="stat-label">Metallic Materials, TU Freiberg</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">RFA</div>
+          <div class="stat-label">Flight hardware design</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">FEM</div>
+          <div class="stat-label">Simulation & metal forming</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <p class="section-label reveal">Skills</p>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">⚙️</div>
+        <h3>Mechanical Engineering</h3>
+        <div class="tags">
+          <span class="tag">FEM</span>
+          <span class="tag">Metal Forming</span>
+          <span class="tag">Rolling Simulation</span>
+          <span class="tag">GD&T</span>
+          <span class="tag">AutoCAD</span>
+          <span class="tag">Structural Design</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">🤖</div>
+        <h3>Machine Learning</h3>
+        <div class="tags">
+          <span class="tag">Scikit-learn</span>
+          <span class="tag">XGBoost</span>
+          <span class="tag">Random Forests</span>
+          <span class="tag">PCA</span>
+          <span class="tag">K-Means</span>
+          <span class="tag">Cross-Validation</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">🧪</div>
+        <h3>Materials Science</h3>
+        <div class="tags">
+          <span class="tag">Metallic Materials</span>
+          <span class="tag">Steel Alloys</span>
+          <span class="tag">CO₂-free Steel</span>
+          <span class="tag">Microstructure</span>
+          <span class="tag gray">Sustainable Production</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">🐍</div>
+        <h3>Python & Data</h3>
+        <div class="tags">
+          <span class="tag">NumPy</span>
+          <span class="tag">Pandas</span>
+          <span class="tag">Matplotlib</span>
+          <span class="tag">PyTorch</span>
+          <span class="tag gray">VSCode</span>
+          <span class="tag gray">Git</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">🚀</div>
+        <h3>Aerospace & Structures</h3>
+        <div class="tags">
+          <span class="tag">Flight Hardware</span>
+          <span class="tag">Structural Analysis</span>
+          <span class="tag">Rocket Factory Augsburg</span>
+          <span class="tag gray">Aerospace Design</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-card-icon">📐</div>
+        <h3>Engineering Tools</h3>
+        <div class="tags">
+          <span class="tag">HVAC Design</span>
+          <span class="tag gray">AutoCAD</span>
+          <span class="tag gray">GitHub</span>
+          <span class="tag gray">Technical Documentation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-label reveal">Projects</p>
+    <div class="projects-list reveal">
+
+      <a class="project-card" href="https://github.com/Meraj-Syed-1825/ml-engineering-projects" target="_blank">
+        <div>
+          <p class="project-num">01 — Python · Scikit-learn · XGBoost</p>
+          <h3>ML for Steel Materials</h3>
+          <p>
+            12-day structured ML curriculum applied to a steel composition dataset. 
+            Predicting yield strength from Carbon %, Manganese %, and Rolling Temperature 
+            using Linear Regression, Random Forests, XGBoost, PCA, and K-Means clustering. 
+            Includes cross-validation, GridSearchCV, and metallurgical interpretation of results.
+          </p>
+          <div class="tags">
+            <span class="tag">Regression</span>
+            <span class="tag">Classification</span>
+            <span class="tag">Clustering</span>
+            <span class="tag">Dimensionality Reduction</span>
+            <span class="tag gray">Materials Engineering</span>
+          </div>
+        </div>
+        <div class="project-arrow">→</div>
+      </a>
+
+      <a class="project-card" href="https://github.com/Meraj-Syed-1825" target="_blank">
+        <div>
+          <p class="project-num">02 — Coming Soon</p>
+          <h3>Neural Networks for Process Prediction</h3>
+          <p>
+            Deep learning applied to manufacturing process optimization. 
+            Predicting forming outcomes from process parameters using PyTorch.
+          </p>
+          <div class="tags">
+            <span class="tag gray">PyTorch</span>
+            <span class="tag gray">Neural Networks</span>
+            <span class="tag gray">In Progress</span>
+          </div>
+        </div>
+        <div class="project-arrow">→</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <p class="section-label reveal">Experience</p>
+    <div class="timeline reveal">
+
+      <div class="timeline-item">
+        <p class="timeline-date">Current</p>
+        <h3>M.Sc. Student — Metallic Materials Technology</h3>
+        <p class="timeline-company">TU Bergakademie Freiberg</p>
+        <p>Specialization in metal forming and rolling simulation. Research on CO₂-free steel production alternatives. Self-studying ML with engineering applications focus.</p>
+      </div>
+
+      <div class="timeline-item">
+        <p class="timeline-date">Rocket Factory Augsburg</p>
+        <h3>Mechanical Design Engineer</h3>
+        <p class="timeline-company">Flight Hardware Division</p>
+        <p>Structural design of flight hardware components. Applied FEM analysis and GD&T principles to aerospace-grade parts. High-precision engineering in a fast-paced new space environment.</p>
+      </div>
+
+      <div class="timeline-item">
+        <p class="timeline-date">Early Career</p>
+        <h3>HVAC Design Internship</h3>
+        <p class="timeline-company">Engineering Consultancy</p>
+        <p>Used AutoCAD for HVAC system design and technical documentation. First exposure to professional engineering workflows and design standards.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2 class="reveal">Let's work<br/><em style="font-family:'DM Serif Display',serif; font-style:italic; color:var(--accent)">together.</em></h2>
+    <p class="reveal">Open to internships, working student positions, and research collaborations<br/>in ML, materials engineering, and aerospace structures.</p>
+    <div class="contact-links reveal">
+      <a href="https://github.com/Meraj-Syed-1825" target="_blank" class="btn btn-primary">GitHub ↗</a>
+      <a href="mailto:your.email@example.com" class="btn btn-secondary">Email me →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Meraj Syed</p>
+    <p>Built with HTML · Hosted on GitHub Pages</p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
